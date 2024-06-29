@@ -79,7 +79,7 @@ export class AddUserTable1719590168719 implements MigrationInterface {
         await queryRunner.query(`
             DROP TRIGGER IF EXISTS del_trg_bo_user
         `);
-        await queryRunner.dropForeignKey('[user]', 'fk_bo_user_status_1');
+        await queryRunner.dropForeignKey('bo_user', 'fk_bo_user_status_1');
         await queryRunner.dropTable("bo_user");
     }
 
