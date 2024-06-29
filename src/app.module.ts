@@ -5,6 +5,13 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration from './config/configuration';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MssqlDbConfigService } from './config/typeorm.service';
+import { AuthModule } from './auth/auth.module';
+import { UserModule } from './user/user.module';
+import { StatusModule } from './status/status.module';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './guards/auth.guard';
+import { User } from './user/entities/user.entity';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -16,13 +23,21 @@ import { MssqlDbConfigService } from './config/typeorm.service';
       useClass: MssqlDbConfigService,
       inject: [MssqlDbConfigService],
     }),
-    
+    TypeOrmModule.forFeature([User]),
+    AuthModule,
+    UserModule,
+    StatusModule,
   ],
   controllers: [AppController],
   providers: [
     AppService,
     ConfigService,
-    MssqlDbConfigService
+    MssqlDbConfigService,
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard
+    },
+    JwtService
   ],
 })
 export class AppModule {}
