@@ -12,7 +12,7 @@ export class CreateZivotinjaDto extends OmitType(Zivotinja, [
     'remove',
     'softRemove',
     'recover',
-    'reload',
+    'reload'
 ]) {
     @IsIn(['M', 'F'])
     @IsNotEmpty()
