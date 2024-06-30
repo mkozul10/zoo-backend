@@ -19,16 +19,6 @@ export class ZivotinjaService {
     createZivotinjaDto.razlogBrisanja = null;
     const zivotinja = await this.zivotinjaRepo.save(createZivotinjaDto);
     if (file) {
-      /*
-      {
-        fieldname: 'file',
-        originalname: 'images.jpeg',
-        encoding: '7bit',
-        mimetype: 'image/jpeg',
-        buffer: <Buffer ff d8 ff e0 00 10 4a 46 49 46 00 01 01 00 00 01 00 01 00 00 ff db 00 84 00 09 06 07 12 12 12 15 13 13 13 16 16 15 17 15 17 15 17 15 17 18 18 15 16 17 ... 6367 more bytes>,
-        size: 6417
-      }
-      */
 
       const fileEntity = new FileEntity();
       fileEntity.fileName = file.originalname;
