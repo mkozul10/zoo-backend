@@ -38,7 +38,7 @@ async function bootstrap() {
   });
   app.use(cookieParser());
   app.enableCors({
-    origin: 'https://dosa.fer.hr:3000, http://localhost:3000',
+    origin: 'https://dosa.fer.hr:3000, http://localhost:3001',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true
   });

@@ -25,14 +25,23 @@ export class AuthGuard implements CanActivate {
         try {
             const payload = this.jwtService.verify(accessToken, { secret: 'access-token-secret' });
             const id = payload['sub'];
-            const user = await this.userRepo.findOneOrFail({ where: { id } });
-            request['user'] = user
-            
+            const user = await this.userRepo.findOneOrFail({
+                select: ['id', 'username', 'refreshToken'],
+                where: { id }
+            });
+            const refreshToken = request['cookies']['refresh-token'];
+            if (refreshToken) {
+                if (user.refreshToken !== refreshToken)
+                    throw Error;
+                    
+            }
+            else throw Error;
 
+            request['user'] = user;
         } catch (e) {
             throw new UnauthorizedException();
         }
-        return true
+        return true;
     }
 
     private extractTokenFromHeader(request: Request) {
