@@ -12,6 +12,8 @@ import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './guards/auth.guard';
 import { User } from './user/entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
+import { ZivotinjaModule } from './zivotinja/zivotinja.module';
+import { NastambaModule } from './nastamba/nastamba.module';
 
 @Module({
   imports: [
@@ -27,6 +29,8 @@ import { JwtService } from '@nestjs/jwt';
     AuthModule,
     UserModule,
     StatusModule,
+    ZivotinjaModule,
+    NastambaModule,
   ],
   controllers: [AppController],
   providers: [

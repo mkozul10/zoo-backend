@@ -6,16 +6,20 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express'
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(User)
     private userRepo: Repository<User>,
-    private jwtService: JwtService
+    private jwtService: JwtService,
+    private configService: ConfigService
   ) {}
 
   async getTokens(userId: number, username: string) {
+    const accessTokenSecret = this.configService.get<string>('common.access_token_secret');
+    const refreshTokenSecret= this.configService.get<string>('common.refresh_token_secret');
 
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(
@@ -24,7 +28,7 @@ export class AuthService {
           username,
         },
         {
-          secret: 'access-token-secret',
+          secret: accessTokenSecret,
           expiresIn: '20m',
         },
       ),
@@ -34,7 +38,7 @@ export class AuthService {
           username,
         },
         {
-          secret: 'refresh-token-secret',
+          secret: refreshTokenSecret,
           expiresIn: '7d',
         },
       ),
