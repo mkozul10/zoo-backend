@@ -1,4 +1,5 @@
 import { CanActivate, ExecutionContext, UnauthorizedException } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import { Reflector } from "@nestjs/core";
 import { JwtService } from "@nestjs/jwt";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -11,9 +12,12 @@ export class AuthGuard implements CanActivate {
         @InjectRepository(User)
         private userRepo: Repository<User>,
         private reflector: Reflector,
-        private jwtService: JwtService
+        private jwtService: JwtService,
+        private configService: ConfigService
     ) {}
     async canActivate(context: ExecutionContext): Promise<boolean> {
+        const accessTokenSecret = this.configService.get<string>('common.access_token_secret');
+        const disableRefreshToken = this.configService.get<boolean>('common.disable_refresh_token');
         const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
             context.getHandler(),
             context.getClass(),
@@ -23,19 +27,23 @@ export class AuthGuard implements CanActivate {
         const request = context.switchToHttp().getRequest();
         const accessToken = this.extractTokenFromHeader(request);
         try {
-            const payload = this.jwtService.verify(accessToken, { secret: 'access-token-secret' });
+            const payload = this.jwtService.verify(accessToken, { secret: accessTokenSecret });
             const id = payload['sub'];
             const user = await this.userRepo.findOneOrFail({
                 select: ['id', 'username', 'refreshToken'],
                 where: { id }
             });
-            const refreshToken = request['cookies']['refresh-token'];
-            if (refreshToken) {
-                if (user.refreshToken !== refreshToken)
-                    throw Error;
-                    
+
+            if (!disableRefreshToken) {
+                const refreshToken = request['cookies']['refresh-token'];
+                if (refreshToken) {
+                    if (user.refreshToken !== refreshToken)
+                        throw Error;
+                }
+                else throw Error;
+            } else if (disableRefreshToken && !user.refreshToken) {
+                throw Error;
             }
-            else throw Error;
 
             request['user'] = user;
         } catch (e) {
@@ -46,6 +54,7 @@ export class AuthGuard implements CanActivate {
 
     private extractTokenFromHeader(request: Request) {
         const accessToken: string = request.headers['authorization'];
+        if (!accessToken) return '';
         const segments = accessToken.split(' ');
         if(
             segments.length === 2 &&
