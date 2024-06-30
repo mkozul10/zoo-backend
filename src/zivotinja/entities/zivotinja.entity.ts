@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsDateString, IsNotEmpty, IsOptional, IsString, MaxLength } from "class-validator";
-import { BaseEntity, Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { FileEntity } from "./file.entity";
 
 @Entity('zivotinja', { schema: 'dbo' })
 export class Zivotinja extends BaseEntity {
@@ -56,7 +57,7 @@ export class Zivotinja extends BaseEntity {
         maxLength: 255,
         required: true,
     })
-    hrvatinskiNaziv: string;
+    hrvatskiNaziv: string;
 
     @Column('varchar', {
         name: 'ime',
@@ -110,7 +111,7 @@ export class Zivotinja extends BaseEntity {
     @ApiProperty({
         required: false,
     })
-    datumDobivanja: Date;
+    datumDobivanja?: Date;
 
     @Column('varchar', {
         name: 'razlog_brisanja',
@@ -139,5 +140,15 @@ export class Zivotinja extends BaseEntity {
     @DeleteDateColumn({ name: 'deleted_at', nullable: true })
     deletedAt: Date | null;
 
+    @OneToMany(
+        () => FileEntity,
+        (fileEntity) => fileEntity.zivotinja,
+      )
+    @ApiProperty({
+        type: () => FileEntity,
+        isArray: true
+    })
+    files: FileEntity[];
+      
     // TODO - add one-to-many relations when related entities are created
 }
