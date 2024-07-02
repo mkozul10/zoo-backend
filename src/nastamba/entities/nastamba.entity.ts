@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, IsOptional, IsString, MaxLength } from "class-validator";
+import { Type } from "class-transformer";
+import { IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength } from "class-validator";
 import { BaseEntity, Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity('nastamba', { schema: 'dbo' })
@@ -43,6 +44,34 @@ export class Nastamba extends BaseEntity {
         required: false,
     })
     vrsta?: string;
+
+    @Column('float', {
+        name: 'pol_x',
+        nullable: true
+    })
+    @ApiProperty({
+        example: 56.12341,
+        required: false,
+        nullable: true,
+        type: Number
+    })
+    @IsNumber()
+    @Type(() => Number)
+    polX?: number | null;
+
+    @Column('float', {
+        name: 'pol_y',
+        nullable: true
+    })
+    @ApiProperty({
+        example: 56.12341,
+        required: false,
+        nullable: true,
+        type: Number
+    })
+    @IsNumber()
+    @Type(() => Number)
+    polY?: number | null;
 
     @ApiProperty({ type: Date })
     @CreateDateColumn({ name: 'created_at', default: () => 'getdate()' })
