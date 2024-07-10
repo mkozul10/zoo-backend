@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestj
 import { NastambaService } from './nastamba.service';
 import { CreateNastambaDto } from './dto/create-nastamba.dto';
 import { UpdateNastambaDto } from './dto/update-nastamba.dto';
-import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiConflictResponse, ApiInternalServerErrorResponse, ApiNotFoundResponse, ApiOkResponse, ApiParam, ApiQuery, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiConflictResponse, ApiInternalServerErrorResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { ErrorDto } from 'src/dto/error.dto';
 import { SearchDto } from 'src/dto/search.dto';
 import { ParamIdDto } from 'src/dto/param-id.dto';

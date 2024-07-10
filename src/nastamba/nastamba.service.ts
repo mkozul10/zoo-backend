@@ -5,12 +5,14 @@ import { Repository } from 'typeorm';
 import { Nastamba } from './entities/nastamba.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SuccessDeleteDto } from '../dto/success-delete.dto';
+import { HelperService } from 'src/helper/helper.service';
 
 @Injectable()
 export class NastambaService {
   constructor(
     @InjectRepository(Nastamba)
-    private nastambaRepo: Repository<Nastamba>
+    private nastambaRepo: Repository<Nastamba>,
+    private helperService: HelperService
   ) {}
   async create(createNastambaDto: CreateNastambaDto) {
     const nastamba = await this.nastambaRepo.save(createNastambaDto);
@@ -21,7 +23,14 @@ export class NastambaService {
   }
 
   async findAll(search: string) {
-    const [data, count] = await this.nastambaRepo.findAndCount();
+    const whereConditions = this.helperService.getWhereClause(
+      search,
+      ['polX', 'polY', 'id'],
+      ['naziv', 'vrsta'],
+    );
+    const [data, count] = await this.nastambaRepo.findAndCount({
+      where: whereConditions.length > 0 ? whereConditions : undefined,
+    });
     return {
       data,
       count

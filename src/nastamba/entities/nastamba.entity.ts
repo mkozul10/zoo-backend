@@ -1,7 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength } from "class-validator";
-import { BaseEntity, Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { NastambaZivotinja } from "src/nastamba-zivotinja/entities/nastamba-zivotinja.entity";
+import { BaseEntity, Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity('nastamba', { schema: 'dbo' })
 export class Nastamba extends BaseEntity {
@@ -84,6 +85,16 @@ export class Nastamba extends BaseEntity {
     @ApiProperty({ type: Date })
     @DeleteDateColumn({ name: 'deleted_at', nullable: true })
     deletedAt: Date | null;
+
+    @OneToMany(
+        () => NastambaZivotinja,
+        (nastambaZivotinja) => nastambaZivotinja.nastamba,
+      )
+    @ApiProperty({
+        type: () => NastambaZivotinja,
+        isArray: true
+    })
+    nastambeZivotinje: NastambaZivotinja[];
 
     // TODO - add one-to-many relations when related entities are created
 }

@@ -4,6 +4,7 @@ import { ZivotinjaController } from './zivotinja.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Zivotinja } from './entities/zivotinja.entity';
 import { FileEntity } from './entities/file.entity';
+import { HelperService } from 'src/helper/helper.service';
 
 @Module({
   imports: [
@@ -13,6 +14,6 @@ import { FileEntity } from './entities/file.entity';
     ])
   ],
   controllers: [ZivotinjaController],
-  providers: [ZivotinjaService],
+  providers: [ZivotinjaService, HelperService],
 })
 export class ZivotinjaModule {}
