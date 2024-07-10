@@ -40,7 +40,7 @@ export class FileEntity extends BaseEntity {
         nullable: false,
         transformer: {
             to: (value: Buffer) => value,
-            from: (value: Buffer) => value.toString('base64')
+            from: (value: Buffer) => value?.toString('base64')
         }
     })
     @ApiProperty({

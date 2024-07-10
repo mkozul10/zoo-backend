@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Zivotinja } from './entities/zivotinja.entity';
 import { SuccessDeleteDto } from 'src/dto/success-delete.dto';
 import { FileEntity } from './entities/file.entity';
+import { HelperService } from 'src/helper/helper.service';
 
 @Injectable()
 export class ZivotinjaService {
@@ -13,7 +14,8 @@ export class ZivotinjaService {
     @InjectRepository(Zivotinja)
     private zivotinjaRepo: Repository<Zivotinja>,
     @InjectRepository(FileEntity)
-    private fileRepo: Repository<FileEntity>
+    private fileRepo: Repository<FileEntity>,
+    private helperService: HelperService
   ) {}
   async create(createZivotinjaDto: CreateZivotinjaDto, file: Express.Multer.File) {
     createZivotinjaDto.razlogBrisanja = null;
@@ -34,7 +36,14 @@ export class ZivotinjaService {
   }
 
   async findAll(search: string) {
-    const [data, count] = await this.zivotinjaRepo.findAndCount();
+    const whereConditions = this.helperService.getWhereClause(
+      search,
+      ['id'],
+      ['latinskiNaziv', 'engleskiNaziv', 'hrvatskiNaziv', 'ime', 'spol', 'opisDobivanja', 'razlogBrisanja'],
+    );
+    const [data, count] = await this.zivotinjaRepo.findAndCount({
+      where: whereConditions.length > 0 ? whereConditions : undefined,
+    });
     return {
       data,
       count

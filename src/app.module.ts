@@ -14,6 +14,8 @@ import { User } from './user/entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
 import { ZivotinjaModule } from './zivotinja/zivotinja.module';
 import { NastambaModule } from './nastamba/nastamba.module';
+import { NastambaZivotinjaModule } from './nastamba-zivotinja/nastamba-zivotinja.module';
+import { ValidatorModule } from './validator/validator.module';
 
 @Module({
   imports: [
@@ -31,6 +33,8 @@ import { NastambaModule } from './nastamba/nastamba.module';
     StatusModule,
     ZivotinjaModule,
     NastambaModule,
+    NastambaZivotinjaModule,
+    ValidatorModule
   ],
   controllers: [AppController],
   providers: [
